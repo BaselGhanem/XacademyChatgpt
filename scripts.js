@@ -312,3 +312,75 @@ function initModals() {
         });
     });
 }
+
+/**
+ * Handles opening and closing of course details modals.
+ */
+function initModals() {
+    const modalTriggers = document.querySelectorAll('[data-modal-target]');
+    const modals = document.querySelectorAll('.modal');
+    const closeButtons = document.querySelectorAll('.modal-close-btn');
+
+    modalTriggers.forEach(trigger => {
+        trigger.addEventListener('click', (e) => {
+            e.preventDefault();
+            const targetId = trigger.getAttribute('data-modal-target');
+            const targetModal = document.getElementById(targetId);
+            if (targetModal) {
+                targetModal.style.display = 'block';
+                setTimeout(() => targetModal.classList.add('active'), 10);
+                document.body.style.overflow = 'hidden';
+            }
+        });
+    });
+
+    closeButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const modal = btn.closest('.modal');
+            if (modal) {
+                modal.classList.remove('active');
+                setTimeout(() => modal.style.display = 'none', 500);
+                document.body.style.overflow = 'auto';
+            }
+        });
+    });
+
+    // Close modal when clicking outside of it
+    window.addEventListener('click', (e) => {
+        modals.forEach(modal => {
+            if (e.target === modal) {
+                modal.classList.remove('active');
+                setTimeout(() => modal.style.display = 'none', 500);
+                document.body.style.overflow = 'auto';
+            }
+        });
+    });
+
+    // ✅ NEW CODE: Close modal when clicking "سجل الان" buttons
+    const registerButtons = document.querySelectorAll('.modal-link.cta-btn.primary');
+    registerButtons.forEach(button => {
+        button.addEventListener('click', (e) => {
+            e.preventDefault();
+            
+            // Find the parent modal and close it
+            const modal = button.closest('.modal');
+            if (modal) {
+                modal.classList.remove('active');
+                setTimeout(() => {
+                    modal.style.display = 'none';
+                    document.body.style.overflow = 'auto';
+                }, 500);
+            }
+            
+            // Optional: Scroll to registration section
+            const registrationSection = document.getElementById('registration');
+            if (registrationSection) {
+                const navHeight = document.querySelector('.main-nav').offsetHeight;
+                window.scrollTo({
+                    top: registrationSection.offsetTop - navHeight - 30,
+                    behavior: 'smooth'
+                });
+            }
+        });
+    });
+}
