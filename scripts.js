@@ -16,6 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initMagneticCursor();
     initScrollAnimations();
     initModals();
+    initRegistrationForm(); // ✅ أضف هذا السطر
 });
 
 /**
@@ -382,5 +383,60 @@ function initModals() {
                 });
             }
         });
+    });
+}
+/**
+ * Handles registration form submission and thank you message
+ */
+function initRegistrationForm() {
+    const registrationForm = document.getElementById('registration-form');
+    const thankYouMessage = document.getElementById('thank-you-message');
+    const closeThankYou = document.querySelector('.close-thank-you');
+
+    if (!registrationForm || !thankYouMessage) return;
+
+    registrationForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        
+        // هنا يمكنك إضافة كود إرسال البيانات إلى الخادم
+        
+        // إخفاء النموذج
+        registrationForm.style.opacity = '0';
+        registrationForm.style.transform = 'translateY(20px)';
+        
+        // إظهار رسالة الشكر بعد تأخير بسيط
+        setTimeout(() => {
+            thankYouMessage.style.display = 'flex';
+            setTimeout(() => {
+                thankYouMessage.classList.add('active');
+            }, 50);
+        }, 500);
+    });
+
+    // إغلاق رسالة الشكر
+    if (closeThankYou) {
+        closeThankYou.addEventListener('click', () => {
+            thankYouMessage.classList.remove('active');
+            setTimeout(() => {
+                thankYouMessage.style.display = 'none';
+                // إعادة تعيين النموذج
+                registrationForm.reset();
+                registrationForm.style.opacity = '1';
+                registrationForm.style.transform = 'translateY(0)';
+            }, 300);
+        });
+    }
+
+    // إغلاق رسالة الشكر عند النقر خارجها
+    thankYouMessage.addEventListener('click', (e) => {
+        if (e.target === thankYouMessage) {
+            thankYouMessage.classList.remove('active');
+            setTimeout(() => {
+                thankYouMessage.style.display = 'none';
+                registrationForm.reset();
+                registrationForm.style.opacity = '1';
+                registrationForm.style.transform = 'translateY(0)';
+            }, 300);
+        }
     });
 }
