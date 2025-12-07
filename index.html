@@ -1,707 +1,333 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Interactive Excel LAMBDA Learning Guide</title>
-    
-    <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700;900&display=swap" rel="stylesheet">
-    
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-    <!-- Chosen Palette: Warm Neutrals (#fdfaf6) with Excel Green Accents (#107c41) -->
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #fdfaf6;
-            color: #1f2937;
-        }
-        .chart-container {
-            position: relative;
-            width: 100%;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-            height: 300px;
-            max-height: 400px;
-        }
-        @media (min-width: 768px) {
-            .chart-container {
-                height: 350px;
-            }
-        }
-        .input-focus:focus {
-            outline: none;
-            border-color: #107c41;
-            box-shadow: 0 0 0 3px rgba(16, 124, 65, 0.2);
-        }
-        .code-output {
-            white-space: pre-wrap;
-            word-break: break-all;
-        }
-        .spinner {
-            border-top-color: transparent;
-            border-left-color: transparent;
-            animation: spin 1s ease-in-out infinite;
-        }
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-    </style>
-
-    <!-- Application Structure Plan: The SPA follows a pedagogical flow: Problem (Hero) -> Concept (Syntax Breakdown) -> Practice (Interactive Simulators) -> Proof (Efficiency Chart) -> Mastery (DIY Section). This thematic, task-oriented structure prioritizes user engagement and active learning over mirroring a linear report structure, which is optimal for a technical guide. -->
-    <!-- Visualization & Content Choices: The core interactive component is the 'Interactive Lab' using multiple HTML input/output blocks (Function Cards) powered by Vanilla JS to simulate the LAMBDA results in real-time. The Value Proposition is quantified using a Chart.js Bar Chart comparing conceptual metrics (Effort, Errors). All visualizations and graphics use Canvas (Chart.js) or structured HTML/CSS/Unicode; NO SVG or Mermaid JS is used. -->
-    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <title>X Academy - مستقبل التعلم المهني</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@200..1000&family=Noto+Sans+Arabic:wght@100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 </head>
-<body class="bg-[#fdfaf6]">
+<body data-theme="dark">
+    <canvas id="living-background"></canvas>
 
-    <!-- Navbar -->
-    <nav class="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16 items-center">
-                <div class="flex items-center">
-                    <span class="text-2xl font-black text-[#107c41]">Excel LAMBDA</span>
-                    <span class="ml-2 text-gray-500 text-sm hidden sm:inline-block">| Interactive Guide</span>
-                </div>
-                <div class="hidden md:flex space-x-8">
-                    <a href="#concept" class="text-gray-700 hover:text-[#107c41] px-3 py-2 rounded-md font-medium transition duration-150">Concept</a>
-                    <a href="#examples" class="text-gray-700 hover:text-[#107c41] px-3 py-2 rounded-md font-medium transition duration-150">Practical Examples</a>
-                    <a href="#diy" class="bg-[#107c41] text-white px-4 py-2 rounded-md font-medium hover:bg-[#0c5e31] transition duration-150">Try It Yourself</a>
-                </div>
+    <div class="magnetic-cursor" id="magnetic-cursor"></div>
+
+    <nav class="main-nav">
+        <div class="nav-container">
+            <a href="#" class="nav-logo" aria-label="X Academy Logo">
+                <span class="logo-text">X Academy</span>
+            </a>
+         <ul class="nav-menu">
+    <li><a href="#hero" class="nav-link active">الرئيسية</a></li>
+    <li><a href="#courses" class="nav-link">الدورات</a></li>
+    <li><a href="#instructor" class="nav-link">المدرب</a></li>
+    <li><a href="#registration" class="nav-link">التسجيل</a></li>
+    <li><a href="about.html" class="nav-link">About Us</a></li>
+</ul>
+
+            <div class="nav-actions">
+                <button class="theme-toggle" id="theme-toggle" aria-label="Toggle light/dark theme">
+                    <i class="fas fa-moon"></i>
+                </button>
+                <button class="hamburger" id="hamburger" aria-label="Open mobile menu">
+                    <span></span>
+                    <span></span>
+                </button>
             </div>
         </div>
     </nav>
 
-    <!-- Hero Section: The Problem -->
-    <section class="max-w-4xl mx-auto px-4 py-12 sm:px-6 lg:px-8 text-center">
-        <h1 class="text-4xl font-extrabold text-gray-900 sm:text-5xl mb-6">
-            Eliminate "Formula Fatigue" with LAMBDA
-        </h1>
-        <p class="text-xl text-gray-600 mb-8 leading-relaxed">
-            How many times have you copied the same complex formula across different sheets? <br>
-            <span class="font-bold text-[#d97706]">LAMBDA</span> is Excel's game-changing feature that lets you create your own reusable custom functions.
-        </p>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-10 text-left">
-            <div class="bg-red-50 p-6 rounded-xl border border-red-100 shadow-md">
-                <div class="text-3xl mb-2">😫</div>
-                <h3 class="font-bold text-red-800 mb-2">The Traditional Way</h3>
-                <code class="bg-white px-2 py-1 rounded text-red-600 border border-red-200 block mb-2">=IF(AND(A2>0, B2<50), A2*0.16, 0)</code>
-                <p class="text-sm text-red-700">Copy-pasted everywhere. If the logic changes, you have to find and update every single instance.</p>
-            </div>
-            <div class="bg-green-50 p-6 rounded-xl border border-green-100 shadow-xl transform scale-105 transition duration-300">
-                <div class="text-3xl mb-2">😎</div>
-                <h3 class="font-bold text-[#107c41] mb-2">The LAMBDA Way</h3>
-                <code class="bg-white px-2 py-1 rounded text-[#107c41] border border-green-200 block mb-2">=CalculateVAT(A2)</code>
-                <p class="text-sm text-green-700">Write the logic once, name it, and use it cleanly forever. Change the logic, and all instances update automatically.</p>
-            </div>
+    <aside class="mobile-menu" id="mobile-menu">
+        <div class="menu-header">
+            <span class="logo-text">X Academy</span>
+            <button class="close-btn" aria-label="Close mobile menu">&times;</button>
         </div>
-    </section>
+        <ul class="menu-links">
+            <li><a href="#hero" class="mobile-link active">الرئيسية</a></li>
+            <li><a href="#courses" class="mobile-link">الدورات</a></li>
+            <li><a href="#instructor" class="mobile-link">المدرب</a></li>
+            <li><a href="#registration" class="mobile-link">التسجيل</a></li>
+        </ul>
+    </aside>
 
-    <!-- Concept Section -->
-    <section id="concept" class="bg-white py-12 border-y border-gray-200">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-10">
-                <h2 class="text-3xl font-extrabold text-gray-900">How Does LAMBDA Work?</h2>
-                <p class="mt-4 text-lg text-gray-500 max-w-2xl mx-auto">
-                    You simply define the function's inputs (parameters) and the calculation that uses them.
+    <section id="hero" class="hero-section section-padding">
+        <div class="content-wrapper">
+            <div class="hero-text-content">
+                <h1 class="hero-title reveal-text">
+                    <span class="title-line">مستقبل التعلم</span>
+                    <span class="title-line accent">يبدأ من هنا</span>
+                </h1>
+                <p class="hero-description reveal-text">
+                    احترف تحليل البيانات مع دورات Excel و Power BI المتقدمة وارتقِ بمسيرتك المهنية
                 </p>
+                <div class="hero-actions reveal-fade-up">
+                    <a href="#courses" class="cta-btn primary" data-magnetic>
+                        <span>اكتشف دوراتنا</span>
+                        <i class="fas fa-arrow-left"></i>
+                    </a>
+                    <a href="#registration" class="cta-btn secondary" data-magnetic>
+                        <span>سجل الآن</span>
+                    </a>
+                </div>
             </div>
-
-            <div class="flex flex-wrap justify-center items-center gap-4 text-lg font-mono">
-                <div class="bg-gray-100 p-4 rounded-xl shadow-sm">=LAMBDA(</div>
-                <div class="text-gray-400 font-bold">...Parameters...</div>
-                <div class="text-gray-400 font-bold">,</div>
-                <div class="bg-blue-100 text-blue-800 p-4 rounded-xl shadow-md border border-blue-200 relative group cursor-help">
-                    <div class="font-bold">price, rate</div>
-                    <div class="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 w-40 bg-gray-800 text-white text-xs p-2 rounded hidden group-hover:block text-center whitespace-nowrap">Your Inputs/Variables</div>
-                </div>
-                <div class="text-gray-400 font-bold">,</div>
-                <div class="bg-green-100 text-green-800 p-4 rounded-xl shadow-md border border-green-200 relative group cursor-help">
-                    <div class="font-bold">price * (1 + rate)</div>
-                    <div class="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 w-48 bg-gray-800 text-white text-xs p-2 rounded hidden group-hover:block text-center">The Logic/Calculation/Result</div>
-                </div>
-                <div class="bg-gray-100 p-4 rounded-xl shadow-sm">)</div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Interactive Simulator Section (Core) -->
-    <section id="examples" class="py-12 bg-[#fdfaf6]">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="mb-10 text-center">
-                <h2 class="text-3xl font-extrabold text-gray-900">The Interactive Examples Lab</h2>
-                <p class="mt-4 text-lg text-gray-600">
-                    Explore the source report's key functional examples. Change the numbers below and see how the LAMBDA logic calculates the result instantly.
-                </p>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                
-                <!-- Example 1: VAT -->
-                <div class="bg-white rounded-xl shadow-xl overflow-hidden border border-gray-100">
-                    <div class="bg-[#107c41] p-4 text-white flex justify-between items-center">
-                        <h3 class="font-bold text-lg">1. Calculate VAT (16%)</h3>
-                        <span class="text-2xl">💰</span>
+            <div class="hero-visual reveal-scale">
+                <div class="visual-container">
+                    <div class="floating-card excel" data-magnetic>
+                        <i class="fas fa-table"></i>
+                        <span>Excel</span>
                     </div>
-                    <div class="p-6">
-                        <p class="text-sm text-gray-500 mb-4">Calculates the 16% tax amount for any price.</p>
-                        <div class="bg-gray-50 p-3 rounded-lg mb-4 font-mono text-sm text-gray-700 text-left">
-                            =LAMBDA(price, price * 0.16)
-                        </div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Enter Price:</label>
-                        <input type="number" id="vat-input" value="100" class="w-full p-2 border border-gray-300 rounded-lg input-focus mb-4" oninput="calculateVAT()">
-                        
-                        <div class="bg-green-50 p-4 rounded-lg border border-green-100 text-center">
-                            <span class="text-xs text-green-600 uppercase tracking-wider">Result (Tax Amount Only)</span>
-                            <div class="text-3xl font-bold text-[#107c41] mt-1" id="vat-result">16.00</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Example 2: Discount -->
-                <div class="bg-white rounded-xl shadow-xl overflow-hidden border border-gray-100">
-                    <div class="bg-[#d97706] p-4 text-white flex justify-between items-center">
-                        <h3 class="font-bold text-lg">2. Net Discount Amount</h3>
-                        <span class="text-2xl">🏷️</span>
-                    </div>
-                    <div class="p-6">
-                        <p class="text-sm text-gray-500 mb-4">Calculates the final amount after a specified percentage discount.</p>
-                        <div class="bg-gray-50 p-3 rounded-lg mb-4 font-mono text-sm text-gray-700 text-left">
-                            =LAMBDA(amt, pct, amt - (amt*pct))
-                        </div>
-                        <div class="grid grid-cols-2 gap-4 mb-4">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Amount:</label>
-                                <input type="number" id="disc-amt" value="200" class="w-full p-2 border border-gray-300 rounded-lg input-focus" oninput="calculateDiscount()">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Rate (0.10):</label>
-                                <input type="number" id="disc-pct" value="0.10" step="0.01" max="1" class="w-full p-2 border border-gray-300 rounded-lg input-focus" oninput="calculateDiscount()">
-                            </div>
-                        </div>
-                        
-                        <div class="bg-orange-50 p-4 rounded-lg border border-orange-100 text-center">
-                            <span class="text-xs text-orange-600 uppercase tracking-wider">Price After Discount</span>
-                            <div class="text-3xl font-bold text-[#d97706] mt-1" id="disc-result">180.00</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Example 3: Grade Check (Using IF) -->
-                <div class="bg-white rounded-xl shadow-xl overflow-hidden border border-gray-100">
-                    <div class="bg-blue-600 p-4 text-white flex justify-between items-center">
-                        <h3 class="font-bold text-lg">3. Pass/Fail Grade Check</h3>
-                        <span class="text-2xl">🎓</span>
-                    </div>
-                    <div class="p-6">
-                        <p class="text-sm text-gray-500 mb-4">Uses the IF function within LAMBDA to evaluate the score (Pass >= 50).</p>
-                        <div class="bg-gray-50 p-3 rounded-lg mb-4 font-mono text-sm text-gray-700 text-left">
-                            =LAMBDA(s, IF(s>=50,"Pass","Fail"))
-                        </div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Slide to change the score:</label>
-                        <input type="range" id="grade-input" min="0" max="100" value="73" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer mb-2 accent-blue-600" oninput="checkGrade()">
-                        <div class="text-center text-sm font-bold text-gray-600 mb-4">Current Score: <span id="grade-val">73</span></div>
-                        
-                        <div class="bg-blue-50 p-4 rounded-lg border border-blue-100 text-center transition-colors duration-300" id="grade-box">
-                            <span class="text-xs text-blue-600 uppercase tracking-wider">Result</span>
-                            <div class="text-3xl font-bold text-blue-600 mt-1" id="grade-result">Pass</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Example 4: Transport -->
-                <div class="bg-white rounded-xl shadow-xl overflow-hidden border border-gray-100">
-                    <div class="bg-gray-800 p-4 text-white flex justify-between items-center">
-                        <h3 class="font-bold text-lg">4. Travel Allowance</h3>
-                        <span class="text-2xl">🚗</span>
-                    </div>
-                    <div class="p-6">
-                        <p class="text-sm text-gray-500 mb-4">Calculates allowance for employees (0.35 per Km).</p>
-                        <div class="bg-gray-50 p-3 rounded-lg mb-4 font-mono text-sm text-gray-700 text-left">
-                            =LAMBDA(km, km * 0.35)
-                        </div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Distance (Km):</label>
-                        <input type="number" id="trans-input" value="30" class="w-full p-2 border border-gray-300 rounded-lg input-focus mb-4" oninput="calculateTransport()">
-                        
-                        <div class="bg-gray-100 p-4 rounded-lg border border-gray-200 text-center">
-                            <span class="text-xs text-gray-600 uppercase tracking-wider">Allowance Value</span>
-                            <div class="text-3xl font-bold text-gray-800 mt-1" id="trans-result">10.50</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Example 5: Unit Conversion -->
-                <div class="bg-white rounded-xl shadow-xl overflow-hidden border border-gray-100">
-                    <div class="bg-purple-600 p-4 text-white flex justify-between items-center">
-                        <h3 class="font-bold text-lg">5. Weight Conversion (KG → G)</h3>
-                        <span class="text-2xl">⚖️</span>
-                    </div>
-                    <div class="p-6">
-                        <p class="text-sm text-gray-500 mb-4">Quick and precise conversion from kilograms to grams.</p>
-                        <div class="bg-gray-50 p-3 rounded-lg mb-4 font-mono text-sm text-gray-700 text-left">
-                            =LAMBDA(kg, kg * 1000)
-                        </div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Weight (KG):</label>
-                        <input type="number" id="kg-input" value="2.5" step="0.1" class="w-full p-2 border border-gray-300 rounded-lg input-focus mb-4" oninput="calculateWeight()">
-                        
-                        <div class="bg-purple-50 p-4 rounded-lg border border-purple-100 text-center">
-                            <span class="text-xs text-purple-600 uppercase tracking-wider">Weight in Grams</span>
-                            <div class="text-3xl font-bold text-purple-600 mt-1" id="kg-result">2500</div>
-                        </div>
+                    <div class="floating-card powerbi" data-magnetic>
+                        <i class="fas fa-chart-bar"></i>
+                        <span>Power BI</span>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Chart Section: Value Proposition -->
-    <section class="bg-white py-12 border-t border-gray-200">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-8">
-                <h2 class="text-3xl font-extrabold text-gray-900">Quantifying LAMBDA's Value</h2>
-                <p class="mt-2 text-lg text-gray-600">A conceptual comparison between traditional formula usage and LAMBDA in large-scale projects.</p>
-            </div>
-            
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-center">
-                <div class="lg:col-span-1 space-y-6 text-left">
-                    <div class="flex items-start">
-                        <div class="flex-shrink-0 h-10 w-10 bg-green-100 text-[#107c41] rounded-full flex items-center justify-center font-bold text-xl">1</div>
-                        <div class="ml-4">
-                            <h4 class="text-lg font-bold text-gray-900">Centralized Logic</h4>
-                            <p class="text-sm text-gray-500">If there is an error in your formula, you fix it once in the Name Manager, and a thousand cells update instantly.</p>
-                        </div>
+    <section id="courses" class="courses-section section-padding">
+        <div class="content-wrapper">
+            <header class="section-header">
+                <h2 class="section-title reveal-text">دوراتنا الاحترافية</h2>
+                <p class="section-subtitle reveal-fade-up">صممت دوراتنا لتواكب أحدث متطلبات سوق العمل</p>
+            </header>
+            <div class="courses-grid">
+                <div class="course-card reveal-fade-up" data-course="excel" data-magnetic>
+                    <div class="card-header">
+                        <i class="fas fa-table"></i>
+                        <span class="card-badge">الأكثر طلباً</span>
                     </div>
-                    <div class="flex items-start">
-                        <div class="flex-shrink-0 h-10 w-10 bg-green-100 text-[#107c41] rounded-full flex items-center justify-center font-bold text-xl">2</div>
-                        <div class="ml-4">
-                            <h4 class="text-lg font-bold text-gray-900">Improved Readability</h4>
-                            <p class="text-sm text-gray-500">Reading <code>=CalculateVAT(price)</code> is infinitely easier than decoding a long, nested IF statement.</p>
-                        </div>
+                    <div class="card-content">
+                        <h3>دورة Excel المتقدمة</h3>
+                        <p>احترف تحليل البيانات وعمل التقارير الاحترافية باستخدام أحدث تقنيات Excel</p>
                     </div>
-                    <div class="flex items-start">
-                        <div class="flex-shrink-0 h-10 w-10 bg-green-100 text-[#107c41] rounded-full flex items-center justify-center font-bold text-xl">3</div>
-                        <div class="ml-4">
-                            <h4 class="text-lg font-bold text-gray-900">Reusability</h4>
-                            <p class="text-sm text-gray-500">Write the function logic once and use it effortlessly across multiple projects and sheets.</p>
-                        </div>
+                    <div class="card-footer">
+                        <ul class="card-features">
+                            <li><i class="fas fa-check-circle"></i> 18 ساعة تدريبية</li>
+                            <li><i class="fas fa-check-circle"></i> شهادة معتمدة</li>
+                            <li><i class="fas fa-check-circle"></i> تسجيلات مدى الحياة</li>
+                        </ul>
+                        <button class="details-btn" data-modal-target="excel-modal">عرض التفاصيل</button>
                     </div>
                 </div>
 
-                <div class="lg:col-span-2 flex justify-center">
-                    <div class="chart-container">
-                        <canvas id="efficiencyChart"></canvas>
+                <div class="course-card reveal-fade-up" data-course="powerbi" data-magnetic>
+                    <div class="card-header">
+                        <i class="fas fa-chart-bar"></i>
+                        <span class="card-badge">تكنولوجيا المستقبل</span>
+                    </div>
+                    <div class="card-content">
+                        <h3>دورة Power BI</h3>
+                        <p>حوّل البيانات إلى رؤى مرئية مؤثرة باستخدام أقوى أدوات التحليل</p>
+                    </div>
+                    <div class="card-footer">
+                        <ul class="card-features">
+                            <li><i class="fas fa-check-circle"></i> 7 وحدات متكاملة</li>
+                            <li><i class="fas fa-check-circle"></i> مشاريع عملية</li>
+                            <li><i class="fas fa-check-circle"></i> دعم مباشر</li>
+                        </ul>
+                        <button class="details-btn" data-modal-target="powerbi-modal">عرض التفاصيل</button>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- DIY Section: Fix Logic in User's Mind -->
-    <section id="diy" class="py-16 bg-[#f0fdf4]">
-        <div class="max-w-5xl mx-auto px-4 text-center">
-            <h2 class="text-3xl font-extrabold text-gray-900 mb-4">Your Turn: Build & Explore</h2>
-            <p class="text-lg text-gray-600 mb-8">
-                The best way to learn is by doing. Use the simulators below to master LAMBDA.
-            </p>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                
-                <!-- Card 1: Standard DIY LAMBDA (Existing) -->
-                <div class="bg-white rounded-xl shadow-xl p-8 text-left relative overflow-hidden">
-                    <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-green-400 to-blue-500"></div>
-                    
-                    <h3 class="text-xl font-bold mb-6 text-gray-800 border-b pb-2">Simulating the Name Manager</h3>
-                    
-                    <div class="space-y-4">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Name (Your Custom Function Name):</label>
-                            <input type="text" id="custom-name" value="BaselBonus" placeholder="e.g., CalculateBonus" class="w-full p-2 border border-gray-300 rounded-lg bg-gray-50 input-focus" oninput="updateCustomPreview()">
+    <section id="instructor" class="instructor-section section-padding">
+        <div class="content-wrapper">
+            <header class="section-header">
+                <h2 class="section-title reveal-text">تعرّف على المدرب</h2>
+                <p class="section-subtitle reveal-fade-up">خبرة عملية تثري تجربة التعلم</p>
+            </header>
+            <div class="instructor-container">
+                <div class="instructor-visual reveal-fade-in">
+                    <img src="https://voxoura.com/media/user_images/Basel_Ghanem.jpg" alt="باسل غانم" class="instructor-image">
+                </div>
+                <div class="instructor-info reveal-fade-up">
+                    <h3>باسل غانم | Basel Ghanem</h3>
+                    <p class="instructor-bio">
+                        مدرب محترف ومعتمد من مايكروسوفت بخبرة واسعة في تدريب برامج Office المتقدمة. يتميز بأسلوب تدريب تفاعلي يجمع بين الجانب النظري والعملي لضمان تحقيق أقصى استفادة.
+                    </p>
+                    <div class="instructor-stats">
+                        <div class="stat">
+                            <span class="stat-number">500+</span>
+                            <span class="stat-label">متدرب</span>
                         </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Refers to (The LAMBDA Logic):</label>
-                            <div class="flex items-center bg-gray-50 border border-gray-300 rounded-lg px-2">
-                                <span class="text-gray-500 font-mono select-none">=LAMBDA(amount, </span>
-                                <input type="text" id="custom-logic" value="amount * 0.20" placeholder="amount * 0.20" class="flex-1 p-2 bg-transparent outline-none font-mono text-gray-800" oninput="updateCustomPreview()">
-                                <span class="text-gray-500 font-mono select-none">)</span>
-                            </div>
-                            <p class="text-xs text-gray-500 mt-1">Note: The parameter 'amount' is already defined. Enter the calculation logic only.</p>
+                        <div class="stat">
+                            <span class="stat-number">8+</span>
+                            <span class="stat-label">سنوات خبرة</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-number">98%</span>
+                            <span class="stat-label">رضا العملاء</span>
                         </div>
                     </div>
+                    <a href="https://www.linkedin.com/in/baselghanem/" target="_blank" class="linkedin-btn" data-magnetic>
+                        <i class="fab fa-linkedin"></i>
+                        <span>عرض الملف الشخصي على LinkedIn</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
 
-                    <div class="mt-8 p-4 bg-gray-100 rounded-lg text-center">
-                        <p class="text-sm text-gray-500 mb-2">How it looks when you use it in Excel:</p>
-                        <code class="text-xl font-bold text-[#107c41] inline-block" id="usage-preview">=BaselBonus(1000)</code>
-                    </div>
-
-                    <div class="mt-6 text-center">
-                        <button class="bg-[#107c41] text-white px-8 py-3 rounded-full font-bold shadow-lg hover:bg-[#0c5e31] transition transform hover:-translate-y-1" onclick="celebrateCreation()">
-                            Create Function 🚀
+    <section id="registration" class="registration-section section-padding">
+        <div class="content-wrapper">
+            <header class="section-header">
+                <h2 class="section-title reveal-text">ابدأ رحلتك الآن</h2>
+                <p class="section-subtitle reveal-fade-up">خطوات بسيطة تفصلك عن مستقبل مهني أفضل</p>
+            </header>
+            <div class="registration-container">
+                <div class="registration-form-container reveal-fade-up">
+                    <form id="registration-form" class="registration-form">
+                        <!-- رسالة الشكر -->
+<div id="thank-you-message" class="thank-you-message" style="display: none;">
+    <div class="thank-you-content">
+        <i class="fas fa-check-circle"></i>
+        <h3>شكراً لتسجيلك!</h3>
+        <p>تم استلام طلبك بنجاح وسنتواصل معك قريباً</p>
+        <button class="close-thank-you">موافق</button>
+    </div>
+</div>
+                        <div class="form-group">
+                            <label for="name">الاسم الكامل</label>
+                            <input type="text" id="name" name="name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">البريد الإلكتروني</label>
+                            <input type="email" id="email" name="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="phone">رقم الهاتف</label>
+                            <input type="tel" id="phone" name="phone">
+                        </div>
+                        <div class="form-group">
+                            <label for="course">اختر الدورة</label>
+                            <select id="course" name="course" required>
+                                <option value="" disabled selected>اختر الدورة</option>
+                                <option value="excel">دورة Excel المتقدمة</option>
+                                <option value="powerbi">دورة Power BI</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="submit-btn" data-magnetic>
+                            <span>إرسال طلب التسجيل</span>
+                            <div class="btn-glow"></div>
                         </button>
-                        <p id="celebration-msg" class="text-green-600 font-bold mt-4 hidden animate-pulse">Function created successfully! You are a LAMBDA expert 🎉</p>
-                    </div>
-                </div>
-
-                <!-- Card 2: LAMBDA Generator (Gemini Feature 1) -->
-                <div class="bg-white rounded-xl shadow-xl p-8 text-left relative overflow-hidden border border-blue-200">
-                    <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-purple-400 to-pink-500"></div>
-                    
-                    <h3 class="text-xl font-bold mb-6 text-gray-800 border-b pb-2">✨ LAMBDA Formula Generator</h3>
-                    
-                    <p class="text-sm text-gray-500 mb-3">Describe the custom function you need (e.g., "A function with parameters 'price' and 'tax_rate' that calculates the total cost").</p>
-                    <textarea id="generator-input" rows="3" placeholder="I need a function that calculates compound annual growth rate (CAGR) from start_value, end_value, and years." class="w-full p-2 border border-gray-300 rounded-lg input-focus mb-4"></textarea>
-
-                    <div class="text-center">
-                        <button class="bg-blue-600 text-white px-6 py-2 rounded-full font-bold shadow-lg hover:bg-blue-700 transition transform hover:-translate-y-1 flex items-center justify-center mx-auto" onclick="generateLambdaTemplate()">
-                            <span id="generator-button-text">Generate LAMBDA ✨</span>
-                            <div id="generator-spinner" class="spinner border-4 border-blue-200 rounded-full w-5 h-5 ml-2 hidden"></div>
-                        </button>
-                    </div>
-
-                    <div class="mt-6">
-                        <p class="text-sm font-medium text-gray-700 mb-2">Generated Formula:</p>
-                        <code id="generator-output" class="code-output bg-gray-100 p-3 rounded-lg block min-h-[40px] text-gray-800 font-mono text-sm">
-                            <!-- Generated formula will appear here -->
-                        </code>
-                        <p class="text-xs text-red-500 mt-2 hidden" id="generator-error-msg">Error: Failed to generate formula. Please try again or simplify the request.</p>
-                    </div>
-                </div>
-
-                <!-- Card 3: Excel Concept Clarifier (Gemini Feature 2) -->
-                <div class="bg-white rounded-xl shadow-xl p-8 text-left relative overflow-hidden md:col-span-2 border border-yellow-200">
-                    <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-yellow-400 to-orange-500"></div>
-                    
-                    <h3 class="text-xl font-bold mb-6 text-gray-800 border-b pb-2">✨ Explain Any Excel Concept</h3>
-                    
-                    <p class="text-sm text-gray-500 mb-3">Have a question about a function, tool, or concept? Ask anything!</p>
-                    <div class="flex flex-col sm:flex-row gap-3 items-center">
-                        <input type="text" id="clarifier-input" placeholder="e.g., What is the LET function used for?" class="flex-1 w-full p-2 border border-gray-300 rounded-lg input-focus">
-                        <button class="bg-orange-600 text-white px-6 py-2 rounded-full font-bold shadow-lg hover:bg-orange-700 transition transform hover:-translate-y-1 flex items-center justify-center w-full sm:w-auto" onclick="clarifyConcept()">
-                            <span id="clarifier-button-text">Get Explanation ✨</span>
-                            <div id="clarifier-spinner" class="spinner border-4 border-orange-200 rounded-full w-5 h-5 ml-2 hidden"></div>
-                        </button>
-                    </div>
-
-                    <div class="mt-6">
-                        <p class="text-sm font-medium text-gray-700 mb-2">Answer (Grounded by Search):</p>
-                        <div id="clarifier-output" class="bg-gray-100 p-3 rounded-lg block min-h-[50px] text-gray-700 text-sm">
-                            <!-- Explanation will appear here -->
-                        </div>
-                        <div id="clarifier-sources" class="mt-2 text-xs text-gray-500">
-                            <!-- Sources will appear here -->
-                        </div>
-                        <p class="text-xs text-red-500 mt-2 hidden" id="clarifier-error-msg">Error: Failed to fetch explanation. Please check your connection or try again.</p>
-                    </div>
+                    </form>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Footer -->
-    <footer class="bg-gray-800 text-white py-8">
-        <div class="max-w-7xl mx-auto px-4 text-center">
-            <p class="text-gray-400">This educational guide was created based on the provided LAMBDA tutorial content.</p>
-            <div class="mt-4 text-sm text-gray-500">
-                &copy; 2025 LAMBDA Interactive Guide
+    <footer class="main-footer section-padding">
+        <div class="content-wrapper">
+            <div class="footer-grid">
+                <div class="footer-about">
+                    <div class="footer-logo">X Academy</div>
+                    <p>
+                        نحن نقدم دورات تدريبية متقدمة في تحليل البيانات لتمكينك من تحقيق أهدافك المهنية.
+                    </p>
+                </div>
+                <div class="footer-links-group">
+                    <h4>روابط سريعة</h4>
+                    <ul class="footer-links">
+                        <li><a href="#hero">الرئيسية</a></li>
+                        <li><a href="#courses">الدورات</a></li>
+                        <li><a href="#instructor">المدرب</a></li>
+                        <li><a href="#registration">التسجيل</a></li>
+                    </ul>
+                </div>
+                <div class="footer-contact">
+                    <h4>تواصل معنا</h4>
+                    <ul class="contact-list">
+                        <li><i class="fas fa-envelope"></i> contact@xacademy.com</li>
+                        <li><i class="fas fa-phone"></i> +962 77 123 4567</li>
+                        <li><i class="fas fa-map-marker-alt"></i> عَمّان, الأردن</li>
+                    </ul>
+                    <div class="social-links">
+                        <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                        <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 X Academy. جميع الحقوق محفوظة.</p>
             </div>
         </div>
     </footer>
 
-    <!-- Scripts -->
-    <script>
-        // --- Utility Functions (Existing) ---
-        function calculateVAT() {
-            const price = parseFloat(document.getElementById('vat-input').value) || 0;
-            const tax = price * 0.16;
-            document.getElementById('vat-result').innerText = tax.toFixed(2);
-        }
+    <div id="excel-modal" class="modal">
+        <div class="modal-content">
+            <button class="modal-close-btn" aria-label="Close modal">&times;</button>
+            <div class="modal-header">
+                <h3>دورة Excel المتقدمة</h3>
+                <span class="modal-subtitle">شهادة معتمدة</span>
+            </div>
+            <div class="modal-body">
+                <p class="modal-description">
+                    هذه الدورة الشاملة ستنقلك من مستوى المستخدم العادي إلى مستوى الخبير في برنامج Excel. ستتعلم كل شيء من الأساسيات إلى التقنيات المتقدمة لتحليل البيانات، إنشاء التقارير التفاعلية، وأتمتة المهام.
+                </p>
+                <ul class="modal-features">
+                    <li><i class="fas fa-laptop-code"></i> 18 ساعة تدريبية</li>
+                    <li><i class="fas fa-certificate"></i> شهادة معتمدة</li>
+                    <li><i class="fas fa-video"></i> تسجيلات مدى الحياة</li>
+                </ul>
+                <div class="modal-section">
+                    <h4>محاور الدورة</h4>
+                    <ul class="course-topics">
+                        <li>التعرف على واجهة Excel الأساسية</li>
+                        <li>التعامل مع الصيغ والدوال الأساسية</li>
+                        <li>تحليل البيانات باستخدام PivotTables و Pivot Charts</li>
+                        <li>تنسيق الجداول والبيانات بشكل احترافي</li>
+                        <li>أتمتة المهام باستخدام وحدات الماكرو (Macros)</li>
+                        <li>مشاريع عملية تطبيقية</li>
+                    </ul>
+                </div>
+                <div class="modal-cta">
+                    <a href="#registration" class="cta-btn primary modal-link">سجل الآن</a>
+                </div>
+            </div>
+        </div>
+    </div>
 
-        function calculateDiscount() {
-            const amt = parseFloat(document.getElementById('disc-amt').value) || 0;
-            const pct = parseFloat(document.getElementById('disc-pct').value) || 0;
-            const result = amt - (amt * pct);
-            document.getElementById('disc-result').innerText = result.toFixed(2);
-        }
+    <div id="powerbi-modal" class="modal">
+        <div class="modal-content">
+            <button class="modal-close-btn" aria-label="Close modal">&times;</button>
+            <div class="modal-header">
+                <h3>دورة Power BI</h3>
+                <span class="modal-subtitle">تكنولوجيا المستقبل</span>
+            </div>
+            <div class="modal-body">
+                <p class="modal-description">
+                    حوّل البيانات الخام إلى رؤى قابلة للتنفيذ باستخدام Power BI. ستتعلم كيفية إنشاء لوحات تحكم (Dashboards) وتقارير تفاعلية، والقيام بتحليل متعمق للبيانات لاكتشاف الأنماط والاتجاهات الخفية.
+                </p>
+                <ul class="modal-features">
+                    <li><i class="fas fa-chart-line"></i> 7 وحدات متكاملة</li>
+                    <li><i class="fas fa-project-diagram"></i> مشاريع عملية</li>
+                    <li><i class="fas fa-users-cog"></i> دعم مباشر</li>
+                </ul>
+                <div class="modal-section">
+                    <h4>محاور الدورة</h4>
+                    <ul class="course-topics">
+                        <li>أساسيات Power BI وواجهة المستخدم</li>
+                        <li>استيراد البيانات وتجهيزها (Data Transformation)</li>
+                        <li>النمذجة العلائقية (Data Modeling)</li>
+                        <li>إنشاء التقارير والمرئيات التفاعلية</li>
+                        <li>مشاركة التقارير والتعاون عليها</li>
+                        <li>لغة DAX للتحليلات المتقدمة</li>
+                    </ul>
+                </div>
+                <div class="modal-cta">
+                    <a href="#registration" class="cta-btn primary modal-link">سجل الآن</a>
+                </div>
+            </div>
+        </div>
+    </div>
 
-        function checkGrade() {
-            const score = parseInt(document.getElementById('grade-input').value) || 0;
-            document.getElementById('grade-val').innerText = score;
-            const resultBox = document.getElementById('grade-result');
-            const boxContainer = document.getElementById('grade-box');
-
-            if (score >= 50) {
-                resultBox.innerText = "Pass";
-                boxContainer.className = "bg-green-50 p-4 rounded-lg border border-green-100 text-center transition-colors duration-300";
-                resultBox.className = "text-3xl font-bold text-green-600 mt-1";
-            } else {
-                resultBox.innerText = "Fail";
-                boxContainer.className = "bg-red-50 p-4 rounded-lg border border-red-100 text-center transition-colors duration-300";
-                resultBox.className = "text-3xl font-bold text-red-600 mt-1";
-            }
-        }
-
-        function calculateTransport() {
-            const km = parseFloat(document.getElementById('trans-input').value) || 0;
-            const result = km * 0.35;
-            document.getElementById('trans-result').innerText = result.toFixed(2);
-        }
-
-        function calculateWeight() {
-            const kg = parseFloat(document.getElementById('kg-input').value) || 0;
-            const g = kg * 1000;
-            document.getElementById('kg-result').innerText = g;
-        }
-
-        function updateCustomPreview() {
-            const name = document.getElementById('custom-name').value || 'MyFunction';
-            document.getElementById('usage-preview').innerText = `=${name.replace(/\s/g, '')}(1000)`;
-        }
-
-        function celebrateCreation() {
-            const msg = document.getElementById('celebration-msg');
-            msg.classList.remove('hidden');
-            setTimeout(() => {
-                msg.classList.add('hidden');
-            }, 3000);
-        }
-        
-        // --- Gemini API Integration Functions (New) ---
-
-        const apiKey = ""; // API key is provided by the execution environment
-        const GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent";
-        const MAX_RETRIES = 3;
-
-        /**
-         * Generic function to call the Gemini API with exponential backoff.
-         * @param {string} userQuery - The user's input/prompt.
-         * @param {string} systemPrompt - Instructions for the model's persona and output.
-         * @param {boolean} useGrounding - Whether to use Google Search grounding.
-         * @returns {Promise<{text: string, sources: Array<{uri: string, title: string}>}>}
-         */
-        async function callGemini(userQuery, systemPrompt, useGrounding = false) {
-            const payload = {
-                contents: [{ parts: [{ text: userQuery }] }],
-                systemInstruction: { parts: [{ text: systemPrompt }] },
-            };
-
-            if (useGrounding) {
-                payload.tools = [{ "google_search": {} }];
-            }
-
-            let lastError = null;
-            for (let attempt = 0; attempt < MAX_RETRIES; attempt++) {
-                try {
-                    const response = await fetch(`${GEMINI_API_URL}?key=${apiKey}`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(payload)
-                    });
-
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
-
-                    const result = await response.json();
-                    const candidate = result.candidates?.[0];
-                    const text = candidate?.content?.parts?.[0]?.text || "Error: Could not generate response.";
-
-                    let sources = [];
-                    const groundingMetadata = candidate?.groundingMetadata;
-                    if (useGrounding && groundingMetadata && groundingMetadata.groundingAttributions) {
-                        sources = groundingMetadata.groundingAttributions
-                            .map(attr => ({
-                                uri: attr.web?.uri,
-                                title: attr.web?.title,
-                            }))
-                            .filter(source => source.uri && source.title);
-                    }
-                    return { text, sources };
-
-                } catch (error) {
-                    lastError = error;
-                    // Exponential backoff
-                    if (attempt < MAX_RETRIES - 1) {
-                        const delay = Math.pow(2, attempt) * 1000;
-                        await new Promise(resolve => setTimeout(resolve, delay));
-                    }
-                }
-            }
-            return { text: `API failed after ${MAX_RETRIES} attempts. Error: ${lastError.message}`, sources: [] };
-        }
-
-        async function generateLambdaTemplate() {
-            const inputElement = document.getElementById('generator-input');
-            const outputElement = document.getElementById('generator-output');
-            const errorElement = document.getElementById('generator-error-msg');
-            const buttonText = document.getElementById('generator-button-text');
-            const spinner = document.getElementById('generator-spinner');
-            const userDescription = inputElement.value.trim();
-
-            if (!userDescription) {
-                outputElement.textContent = "Please describe the function you need.";
-                return;
-            }
-
-            // UI Feedback: Disable button and show loading spinner
-            buttonText.textContent = "Generating...";
-            spinner.classList.remove('hidden');
-            errorElement.classList.add('hidden');
-            outputElement.textContent = "Processing request...";
-
-            const systemPrompt = "You are an expert Excel formula generator. Your output must be a single, complete, and correct Excel LAMBDA formula. Do not include any explanation, markdown formatting, or surrounding text. Only output the formula starting with '=LAMBDA('";
-            const userQuery = `Generate an Excel LAMBDA function that meets this requirement: ${userDescription}`;
-            
-            const result = await callGemini(userQuery, systemPrompt, false);
-
-            // UI Feedback: Re-enable button and hide loading spinner
-            buttonText.textContent = "Generate LAMBDA ✨";
-            spinner.classList.add('hidden');
-            
-            if (result.text.includes("Error:") || result.text.includes("could not generate")) {
-                outputElement.textContent = "Error during generation. Please refine your request.";
-                errorElement.classList.remove('hidden');
-            } else {
-                outputElement.textContent = result.text.trim();
-                inputElement.value = ''; // Clear input on success
-            }
-        }
-
-        async function clarifyConcept() {
-            const inputElement = document.getElementById('clarifier-input');
-            const outputElement = document.getElementById('clarifier-output');
-            const sourcesElement = document.getElementById('clarifier-sources');
-            const errorElement = document.getElementById('clarifier-error-msg');
-            const buttonText = document.getElementById('clarifier-button-text');
-            const spinner = document.getElementById('clarifier-spinner');
-            const userQuestion = inputElement.value.trim();
-
-            if (!userQuestion) {
-                outputElement.textContent = "Please enter an Excel concept or function to clarify.";
-                return;
-            }
-
-            // UI Feedback: Disable button and show loading spinner
-            buttonText.textContent = "Searching...";
-            spinner.classList.remove('hidden');
-            errorElement.classList.add('hidden');
-            sourcesElement.innerHTML = '';
-            outputElement.textContent = "Searching for the latest information...";
-
-            const systemPrompt = "You are a helpful Excel tutor. Provide a concise, clear explanation for the requested Excel concept or function, suitable for an intermediate learner.";
-            
-            // Use grounding (Google Search) for factual, up-to-date explanations.
-            const result = await callGemini(userQuestion, systemPrompt, true);
-
-            // UI Feedback: Re-enable button and hide loading spinner
-            buttonText.textContent = "Get Explanation ✨";
-            spinner.classList.add('hidden');
-
-            if (result.text.includes("Error:") || result.text.includes("could not generate")) {
-                outputElement.textContent = "Error fetching explanation. Please check your question or try again.";
-                errorElement.classList.remove('hidden');
-            } else {
-                outputElement.textContent = result.text.trim();
-                inputElement.value = ''; // Clear input on success
-                
-                // Display sources
-                if (result.sources.length > 0) {
-                    const listHtml = result.sources.map(s => 
-                        `<a href="${s.uri}" target="_blank" class="text-blue-600 hover:text-blue-800 underline">${s.title}</a>`
-                    ).join(' | ');
-                    sourcesElement.innerHTML = `Sources: ${listHtml}`;
-                } else {
-                    sourcesElement.innerHTML = 'Source: No external sources used.';
-                }
-            }
-        }
-
-        // --- Chart & Initialization ---
-        document.addEventListener('DOMContentLoaded', function() {
-            calculateVAT();
-            calculateDiscount();
-            checkGrade();
-            calculateTransport();
-            calculateWeight();
-            updateCustomPreview();
-
-            const ctx = document.getElementById('efficiencyChart').getContext('2d');
-            
-            const data = {
-                labels: ['Time Spent Editing Logic', 'Error Probability', 'Number of Clicks to Use'],
-                datasets: [
-                    {
-                        label: 'Traditional Formulas',
-                        data: [90, 80, 75],
-                        backgroundColor: 'rgba(239, 68, 68, 0.6)',
-                        borderColor: 'rgba(239, 68, 68, 1)',
-                        borderWidth: 1,
-                        borderRadius: 4
-                    },
-                    {
-                        label: 'Using LAMBDA',
-                        data: [20, 10, 25],
-                        backgroundColor: 'rgba(16, 124, 65, 0.7)',
-                        borderColor: 'rgba(16, 124, 65, 1)',
-                        borderWidth: 1,
-                        borderRadius: 4
-                    }
-                ]
-            };
-
-            const config = {
-                type: 'bar',
-                data: data,
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'bottom',
-                            labels: {
-                                font: {
-                                    family: 'Inter'
-                                }
-                            }
-                        },
-                        title: {
-                            display: true,
-                            text: 'Efficiency Comparison (Lower is Better)',
-                            font: {
-                                family: 'Inter',
-                                size: 16,
-                                weight: 'bold'
-                            }
-                        },
-                        tooltip: {
-                            titleFont: { family: 'Inter' },
-                            bodyFont: { family: 'Inter' }
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            display: false
-                        },
-                        x: {
-                            grid: {
-                                display: false
-                            },
-                            ticks: {
-                                font: {
-                                    family: 'Inter'
-                                }
-                            }
-                        }
-                    }
-                }
-            };
-
-            new Chart(ctx, config);
-        });
-    </script>
+    <script src="scripts.js"></script>
 </body>
 </html>
